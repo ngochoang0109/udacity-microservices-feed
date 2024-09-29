@@ -9,14 +9,18 @@ import { config } from "./config/config";
 import { V0_FEED_MODELS } from "./controllers/v0/model.index";
 
 (async () => {
-    await sequelize.addModels(V0_FEED_MODELS);
 
-    console.debug("Initialize database connection...");
-    console.debug("POSTGRES_HOST", config.host);
-    console.debug("POSTGRES_USERNAME", config.username);
-    console.debug("POSTGRES_PASSWORD", config.password);
-    console.debug("POSTGRES_DATABASE", config.database);
-    await sequelize.sync();
+    try {
+        await sequelize.addModels(V0_FEED_MODELS);
+        console.debug("Initialize database connection...");
+        console.debug("POSTGRES_HOST", process.env.POSTGRES_HOST);
+        console.debug("POSTGRES_USERNAME", process.env.POSTGRES_USERNAME);
+        console.debug("POSTGRES_PASSWORD", process.env.POSTGRES_PASSWORD);
+        console.debug("POSTGRES_DATABASE", process.env.POSTGRES_DATABASE);
+        await sequelize.sync();
+    } catch (error) {
+        console.error("Database connection error:", error);
+    }
 
     const app = express();
     const port = process.env.PORT || 8080;
